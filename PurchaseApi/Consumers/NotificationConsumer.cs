@@ -9,12 +9,16 @@ namespace PurchaseApi.Consumers
 
         public Task Consume(ConsumeContext<INotificationEvent> context)
         {
+            Thread.Sleep(1500);
+
             var data = context.Message;
 
             if (data != null && data.Purchased)
-                _logger.LogInformation("Compra realizada com Sucesso");
+                _logger.LogInformation("Compra do cliente {client} no valor de {amount} realizada com Sucesso", data.Client, data.Amount);
+            else if (data != null)
+                _logger.LogInformation("Compra do cliente {client} no valor de {amount} não realizada, Motivo: {msg}", data.Client, data.Amount, data.Message);
             else
-                _logger.LogInformation("Compra não realizada, Motivo: {msg}", data == null ? "Dados não encontrado!" : data.Message);
+                _logger.LogInformation("Compra não realizada, Motivo: Dados não encontrado!");
 
             return Task.CompletedTask;
         }

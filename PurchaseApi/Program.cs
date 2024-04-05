@@ -25,13 +25,9 @@ builder.Services.AddMassTransit(cfg =>
         cfg.ReceiveEndpoint("Saga-Queue", ep =>
         {
             ep.PrefetchCount = 10;
-            // Get Consumer
             ep.ConfigureConsumer<NewOrderConsumer>(context);
-            // Cancel Consumer
             ep.ConfigureConsumer<NotificationConsumer>(context);
         });
-
-        //cfg.ConfigureEndpoints(context);
     });
 
     cfg.AddConsumer<NewOrderConsumer>();

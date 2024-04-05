@@ -15,6 +15,8 @@ namespace Loan.Consumers
 
         public async Task Consume(ConsumeContext<ILoanEvent> context)
         {
+            Thread.Sleep(1500);
+
             var data = context.Message;
 
             if (data != null)
@@ -34,6 +36,7 @@ namespace Loan.Consumers
                         Loan = true
                     });
 
+                    _logger.LogInformation("Emprestimo ao cliente {client} no valor de {amount} foi concedido!", data.Client, data.Amount);
                     _logger.LogInformation("Enviado para geração de boleto!");
                 }
                 else
@@ -48,6 +51,7 @@ namespace Loan.Consumers
                         Message = "Empretimo não concedido!"
                     });
 
+                    _logger.LogInformation("Emprestimo ao cliente {client} no valor de {amount} foi negado, valor superior a {percent}%!", data.Client, data.Amount, clientPercents);
                     _logger.LogInformation("Enviado para notificação!");
                 }
             }

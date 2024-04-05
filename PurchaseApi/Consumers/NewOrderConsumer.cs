@@ -9,6 +9,8 @@ namespace PurchaseApi.Consumers
 
         public async Task Consume(ConsumeContext<INewOrderEvent> context)
         {
+            Thread.Sleep(1500);
+
             var data = context.Message;
             if (data is not null)
             {
@@ -20,7 +22,7 @@ namespace PurchaseApi.Consumers
                     data.Amount
                 });
 
-                _logger.LogInformation("O pedido foi recepcionado!");
+                _logger.LogInformation("O pedido do cliente {client} no valor de {amount} foi recepcionado!", data.Client, data.Amount);
             }
         }
     }

@@ -1,5 +1,6 @@
 using MassTransit;
 using Provision.Consumers;
+using Provision.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,19 +13,15 @@ builder.Services.AddMassTransit(cfg =>
             hst.Username("guest");
             hst.Password("guest");
         });
-
-        cfg.ConfigureEndpoints(context);
     });
 
     cfg.AddConsumer<ProvisionConsumer>(c => {
         c.UseMessageRetry(r =>
         {
-            r.Ignore<ArgumentNullException>();
-            r.Interval(3, TimeSpan.FromMilliseconds(1000));
+            r.Ignore<IgnoreException>();
+            r.Interval(5, TimeSpan.FromMilliseconds(1000));
         });
     });
-
-    //cfg.AddConsumer<CancelSendingEmailConsumer>();
 });
 
 var app = builder.Build();

@@ -23,8 +23,6 @@ builder.Services.AddMassTransit(cfg =>
             r.Interval(3, TimeSpan.FromMilliseconds(1000));
         });
     });
-
-    //cfg.AddConsumer<CancelSendingEmailConsumer>();
 });
 
 var app = builder.Build();

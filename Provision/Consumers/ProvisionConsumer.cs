@@ -1,5 +1,6 @@
 ﻿using Events;
 using MassTransit;
+using Provision.Exceptions;
 
 namespace Provision.Consumers
 {
@@ -15,10 +16,21 @@ namespace Provision.Consumers
 
         public async Task Consume(ConsumeContext<IProvisionEvent> context)
         {
+            Thread.Sleep(1500);
+
             var data = context.Message;
 
             if (data != null)
             {
+                if (data.Client?.ToUpper() == "RETRY" && context.GetRetryAttempt()< 3) {
+                    _logger.LogWarning("Tentativa {try}", context.GetRetryAttempt()+1);
+                    throw new RetryException("Testando a retentativa!");
+                }
+
+                if (data.Client?.ToUpper() == "ERROR") {
+                    throw new IgnoreException("Testando erro não 'retentavel'!");
+                }
+
                 var clientLimit = _limits.SingleOrDefault(s => s.Key == data.Client?.ToUpper()).Value;
                 if (clientLimit == 0)
                     clientLimit = 500M;
@@ -33,7 +45,7 @@ namespace Provision.Consumers
                         data.Amount
                     });
 
-                    _logger.LogInformation("Enviado para geração de boleto!");
+                    _logger.LogInformation("O pedido do cliente {client} no valor de {amount} foi enviado para geração de boleto!", data.Client, data.Amount);
                 }
                 else
                 {
@@ -46,7 +58,7 @@ namespace Provision.Consumers
                         Limit = clientLimit
                     });
 
-                    _logger.LogInformation("Enviado para analize de emprestimo!");
+                    _logger.LogInformation("O pedido do cliente {client} no valor de {amount} foi enviado para analise de emprestimo!", data.Client, data.Amount);
                 }
             }
             else
