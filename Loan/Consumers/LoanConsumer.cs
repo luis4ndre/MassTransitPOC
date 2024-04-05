@@ -1,0 +1,58 @@
+﻿using Events;
+using MassTransit;
+
+namespace Loan.Consumers
+{
+    public class LoanConsumer(ILogger<LoanConsumer> logger) : IConsumer<ILoanEvent>
+    {
+        private static readonly IDictionary<string, decimal> _percents = new Dictionary<string, decimal>()
+        {
+            ["WESTERN"] = 50,
+            ["NOMAD"] = 30
+        };
+
+        private readonly ILogger<LoanConsumer> _logger = logger;
+
+        public async Task Consume(ConsumeContext<ILoanEvent> context)
+        {
+            var data = context.Message;
+
+            if (data != null)
+            {
+                var clientPercents = _percents.SingleOrDefault(s => s.Key == data.Client?.ToUpper()).Value + 100;
+                if (clientPercents == 100)
+                    clientPercents = 105;
+
+                if ((data.Amount / data.Limit * 100) <= clientPercents)
+                {
+                    await context.Publish<IInvoiceEvent>(new
+                    {
+                        data.OrderId,
+                        data.Client,
+                        data.CurrencyCode,
+                        data.Amount,
+                        Loan = true
+                    });
+
+                    _logger.LogInformation("Enviado para geração de boleto!");
+                }
+                else
+                {
+                    await context.Publish<INotificationEvent>(new
+                    {
+                        data.OrderId,
+                        data.Client,
+                        data.CurrencyCode,
+                        data.Amount,
+                        Purchased = false,
+                        Message = "Empretimo não concedido!"
+                    });
+
+                    _logger.LogInformation("Enviado para notificação!");
+                }
+            }
+            else
+                _logger.LogInformation("Compra não realizada, Motivo: Dados não encontrado!");
+        }
+    }
+}
