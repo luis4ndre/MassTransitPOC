@@ -8,17 +8,13 @@ builder.Services.AddMassTransit(cfg =>
 {
     cfg.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host(new Uri("rabbitmq://localhost/"), hst =>
-        {
-            hst.Username("guest");
-            hst.Password("guest");
-        });
+        cfg.ConfigureEndpoints(context);
     });
 
-    cfg.AddConsumer<ProvisionConsumer>(c => {
+    cfg.AddConsumer<ReserveConsumer>(c => {
         c.UseMessageRetry(r =>
         {
-            r.Ignore<IgnoreException>();
+            //r.Ignore<IgnoreException>();
             r.Interval(5, TimeSpan.FromMilliseconds(1000));
         });
     });

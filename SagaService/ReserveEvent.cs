@@ -2,13 +2,12 @@
 
 namespace SagaService
 {
-    public class NewOrderEvent(ExchangeStateData exchangeStateData) : INewOrderEvent
+    public class ReserveEvent(ExchangeStateData exchangeStateData) : IReserveEvent
     {
         private readonly ExchangeStateData _exchangeStateData = exchangeStateData;
 
         public Guid OrderId => _exchangeStateData.OrderId;
         public string? Client => _exchangeStateData.Client;
-        public string? CurrencyCode => _exchangeStateData.CurrencyCode;
         public decimal Amount => _exchangeStateData.Amount;
     }
 }

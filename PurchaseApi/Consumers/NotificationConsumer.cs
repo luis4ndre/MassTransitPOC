@@ -9,6 +9,8 @@ namespace PurchaseApi.Consumers
 
         public Task Consume(ConsumeContext<INotificationEvent> context)
         {
+            _logger.LogInformation("INotificationEvent Start");
+
             Thread.Sleep(1500);
 
             var data = context.Message;

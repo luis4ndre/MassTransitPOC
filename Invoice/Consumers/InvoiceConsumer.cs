@@ -9,6 +9,8 @@ namespace Invoice.Consumers
 
         public async Task Consume(ConsumeContext<IInvoiceEvent> context)
         {
+            _logger.LogInformation("IInvoiceEvent Start");
+
             Thread.Sleep(1500);
 
             var data = context.Message;
@@ -22,7 +24,6 @@ namespace Invoice.Consumers
                 {
                     data.OrderId,
                     data.Client,
-                    data.CurrencyCode,
                     data.Amount,
                     Purchased = success,
                     Message = msg

@@ -6,8 +6,7 @@ namespace SagaService
 {
     public class ExchangeStateMachine : MassTransitStateMachine<ExchangeStateData>
     {
-        public State? NewOrder { get; private set; }
-        public State? Provision { get; private set; }
+        public State? Received { get; private set; }
         public State? Invoice { get; private set; }
         public State? Loan { get; private set; }
         public State? Notification { get; private set; }
@@ -16,9 +15,8 @@ namespace SagaService
         public Event<IInvoiceEvent>? InvoiceEvent { get; private set; }
         public Event<ILoanEvent>? LoanEvent { get; private set; }
         public Event<INotificationEvent>? NotificationEvent { get; private set; }
-        public Event<IProvisionEvent>? ProvisionEvent { get; private set; }
 
-        public Event<Fault<IProvisionEvent>> ProvisionFaulted { get; private set; }
+        public Event<Fault<IReserveEvent>>? ReserveFaulted { get; private set; }
 
         public ExchangeStateMachine()
         {
@@ -28,55 +26,93 @@ namespace SagaService
             Event(() => InvoiceEvent, a => a.CorrelateById(m => m.Message.OrderId));
             Event(() => LoanEvent, a => a.CorrelateById(m => m.Message.OrderId));
             Event(() => NotificationEvent, a => a.CorrelateById(m => m.Message.OrderId));
-            Event(() => ProvisionEvent, a => a.CorrelateById(m => m.Message.OrderId));
 
-            Event(() => ProvisionFaulted, a => a.CorrelateById(m => m.Message.Message.OrderId));
+            Event(() => ReserveFaulted, a => a.CorrelateById(m => m.Message.Message.OrderId));
 
             Initially(
-                When(NewOrderEvent).TransitionTo(NewOrder).Publish(context => new NewOrderEvent(context.Saga)));
+                When(NewOrderEvent).Then(context =>
+                {
+                    Console.WriteLine("Initially => NewOrderEvent => NewOrder");
 
-            During(NewOrder,
-                When(ProvisionEvent)
-                .Then(context=> Console.WriteLine("TESTETESTETESTETESTETESTETESTETESTETESTE"))
-                .TransitionTo(Provision)
-                .Catch<Exception>(x =>
-                     x.Then(context =>
-                     {
-                         context.Saga.OrderId = context.Message.OrderId;
-                         context.Saga.Client = context.Message.Client;
-                         context.Saga.CurrencyCode = context.Message.CurrencyCode;
-                         context.Saga.Amount = context.Message.Amount;
-                         context.Saga.Purchased = false;
-                         context.Saga.Message = "Exception!! Exception!! Exception!! Exception!! Exception!! Exception!!";
-                     }).TransitionTo(Notification)
-                 ),
-                When(ProvisionFaulted)
-                .Then(context => Console.WriteLine("Exception!! Exception!! Exception!! Exception!! Exception!! Exception!!"))
-                .TransitionTo(Notification)
-                );
+                    context.Saga.OrderId = context.Message.OrderId;
+                    context.Saga.Client = context.Message.Client;
+                    context.Saga.Amount = context.Message.Amount;
+                }).TransitionTo(Received).Publish(context => new ReserveEvent(context.Saga)));
 
-            During(Provision,
-                When(InvoiceEvent).TransitionTo(Invoice),
-                When(LoanEvent).TransitionTo(Loan));
+            During(Received,
+                When(InvoiceEvent)
+                .Then(context =>
+                {
+                    Console.WriteLine("Provision => InvoiceEvent => Invoice");
+
+                    context.Saga.OrderId = context.Message.OrderId;
+                    context.Saga.Client = context.Message.Client;
+                    context.Saga.Amount = context.Message.Amount;
+                }).TransitionTo(Invoice),
+                When(LoanEvent)
+                .Then(context =>
+                {
+                    Console.WriteLine("Provision => LoanEvent => Loan");
+
+                    context.Saga.OrderId = context.Message.OrderId;
+                    context.Saga.Client = context.Message.Client;
+                    context.Saga.Amount = context.Message.Amount;
+                    context.Saga.Limit = context.Message.Limit;
+                }).TransitionTo(Loan),
+                When(ReserveFaulted)
+                .Then(context =>
+                {
+                    Console.WriteLine("Provision => ReserveFaulted => Notification");
+
+                    context.Saga.OrderId = context.Message.Message.OrderId;
+                    context.Saga.Client = context.Message.Message.Client;
+                    context.Saga.Amount = context.Message.Message.Amount;
+                    context.Saga.Purchased = false;
+                    context.Saga.Message = "ReserveFaulted";
+                }).TransitionTo(Notification).Publish(context => new NotificationEvent(context.Saga)));
 
             During(Invoice,
-                When(NotificationEvent).TransitionTo(Notification));
+                When(NotificationEvent)
+                .Then(context =>
+                {
+                    Console.WriteLine("Invoice => NotificationEvent => Notification");
+
+                    context.Saga.OrderId = context.Message.OrderId;
+                    context.Saga.Client = context.Message.Client;
+                    context.Saga.Amount = context.Message.Amount;
+                    context.Saga.Purchased = context.Message.Purchased;
+                    context.Saga.Message = context.Message.Message;
+                }).TransitionTo(Notification));
 
             During(Loan,
-                When(NotificationEvent).TransitionTo(Notification),
-                When(InvoiceEvent).TransitionTo(Invoice));
+                When(NotificationEvent)
+                .Then(context =>
+                {
+                    Console.WriteLine("Loan => NotificationEvent => Notification");
 
-            DuringAny(When(ProvisionFaulted)
-            .Then(context =>
-            {
-                context.Saga.OrderId = context.Message.Message.OrderId;
-                context.Saga.Client = context.Message.Message.Client;
-                context.Saga.CurrencyCode = context.Message.Message.CurrencyCode;
-                context.Saga.Amount = context.Message.Message.Amount;
-                context.Saga.Purchased = false;
-                context.Saga.Message = "Exception!! Exception!! Exception!! Exception!! Exception!! Exception!!";
-            })
-            .TransitionTo(Notification));
+                    context.Saga.OrderId = context.Message.OrderId;
+                    context.Saga.Client = context.Message.Client;
+                    context.Saga.Amount = context.Message.Amount;
+                    context.Saga.Purchased = context.Message.Purchased;
+                    context.Saga.Message = context.Message.Message;
+                }).TransitionTo(Notification),
+                When(InvoiceEvent)
+                .Then(context =>
+                {
+                    Console.WriteLine("Loan => InvoiceEvent => Invoice");
+
+                    context.Saga.OrderId = context.Message.OrderId;
+                    context.Saga.Client = context.Message.Client;
+                    context.Saga.Amount = context.Message.Amount;
+                }).TransitionTo(Invoice));
+
+            During(Notification,
+                When(NotificationEvent)
+                .Then(context =>
+                {
+                    Console.WriteLine("Finalize");
+                })
+                .Finalize());
         }
     }
 }

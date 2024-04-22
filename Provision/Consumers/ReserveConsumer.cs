@@ -4,7 +4,7 @@ using Provision.Exceptions;
 
 namespace Provision.Consumers
 {
-    public class ProvisionConsumer(ILogger<ProvisionConsumer> logger) : IConsumer<IProvisionEvent>
+    public class ReserveConsumer(ILogger<ReserveConsumer> logger) : IConsumer<IReserveEvent>
     {
         private static readonly IDictionary<string, decimal> _limits = new Dictionary<string, decimal>()
         {
@@ -12,22 +12,26 @@ namespace Provision.Consumers
             ["NOMAD"] = 2000
         };
 
-        private readonly ILogger<ProvisionConsumer> _logger = logger;
+        private readonly ILogger<ReserveConsumer> _logger = logger;
 
-        public async Task Consume(ConsumeContext<IProvisionEvent> context)
+        public async Task Consume(ConsumeContext<IReserveEvent> context)
         {
+            _logger.LogInformation("IReserveEvent Start");
+
             Thread.Sleep(1500);
 
             var data = context.Message;
 
             if (data != null)
             {
-                if (data.Client?.ToUpper() == "RETRY" && context.GetRetryAttempt()< 3) {
-                    _logger.LogWarning("Tentativa {try}", context.GetRetryAttempt()+1);
+                if (data.Client?.ToUpper() == "RETRY" && context.GetRetryAttempt() < 3)
+                {
+                    _logger.LogWarning("Tentativa {try}", context.GetRetryAttempt() + 1);
                     throw new RetryException("Testando a retentativa!");
                 }
 
-                if (data.Client?.ToUpper() == "ERROR") {
+                if (data.Client?.ToUpper() == "ERROR")
+                {
                     throw new IgnoreException("Testando erro não 'retentavel'!");
                 }
 
@@ -41,7 +45,6 @@ namespace Provision.Consumers
                     {
                         data.OrderId,
                         data.Client,
-                        data.CurrencyCode,
                         data.Amount
                     });
 
@@ -53,7 +56,6 @@ namespace Provision.Consumers
                     {
                         data.OrderId,
                         data.Client,
-                        data.CurrencyCode,
                         data.Amount,
                         Limit = clientLimit
                     });

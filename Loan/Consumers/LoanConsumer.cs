@@ -15,6 +15,8 @@ namespace Loan.Consumers
 
         public async Task Consume(ConsumeContext<ILoanEvent> context)
         {
+            _logger.LogInformation("ILoanEvent Start");
+
             Thread.Sleep(1500);
 
             var data = context.Message;
@@ -31,7 +33,6 @@ namespace Loan.Consumers
                     {
                         data.OrderId,
                         data.Client,
-                        data.CurrencyCode,
                         data.Amount,
                         Loan = true
                     });
@@ -45,7 +46,6 @@ namespace Loan.Consumers
                     {
                         data.OrderId,
                         data.Client,
-                        data.CurrencyCode,
                         data.Amount,
                         Purchased = false,
                         Message = "Empretimo não concedido!"
