@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events", "Events\Events.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SagaService", "SagaService\SagaService.csproj", "{C0ACFB65-8402-4D57-9511-B7BA2906847C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reserve", "Provision\Reserve.csproj", "{2E2B32F2-9132-44DA-8E35-8A830307E47D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reserve", "Reserve\Reserve.csproj", "{2E2B32F2-9132-44DA-8E35-8A830307E47D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invoice", "Invoice\Invoice.csproj", "{1240BDD8-0E78-4BDC-9F5E-474BAE2ABD98}"
 EndProject

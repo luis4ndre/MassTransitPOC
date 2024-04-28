@@ -1,5 +1,8 @@
-﻿namespace Events
+﻿using MassTransit;
+
+namespace Events
 {
+    [EntityName("queue-new-order-event")]
     public interface INewOrderEvent
     {
         public Guid OrderId { get; }

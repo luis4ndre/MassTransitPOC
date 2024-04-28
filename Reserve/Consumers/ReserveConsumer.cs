@@ -1,8 +1,8 @@
 ﻿using Events;
 using MassTransit;
-using Provision.Exceptions;
+using Reserve.Exceptions;
 
-namespace Provision.Consumers
+namespace Reserve.Consumers
 {
     public class ReserveConsumer(ILogger<ReserveConsumer> logger) : IConsumer<IReserveEvent>
     {

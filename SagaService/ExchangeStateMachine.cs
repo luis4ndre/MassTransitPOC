@@ -43,7 +43,7 @@ namespace SagaService
                 When(InvoiceEvent)
                 .Then(context =>
                 {
-                    Console.WriteLine("Provision => InvoiceEvent => Invoice");
+                    Console.WriteLine("Reserve => InvoiceEvent => Invoice");
 
                     context.Saga.OrderId = context.Message.OrderId;
                     context.Saga.Client = context.Message.Client;
@@ -52,7 +52,7 @@ namespace SagaService
                 When(LoanEvent)
                 .Then(context =>
                 {
-                    Console.WriteLine("Provision => LoanEvent => Loan");
+                    Console.WriteLine("Reserve => LoanEvent => Loan");
 
                     context.Saga.OrderId = context.Message.OrderId;
                     context.Saga.Client = context.Message.Client;
@@ -62,7 +62,7 @@ namespace SagaService
                 When(ReserveFaulted)
                 .Then(context =>
                 {
-                    Console.WriteLine("Provision => ReserveFaulted => Notification");
+                    Console.WriteLine("Reserve => ReserveFaulted => Notification");
 
                     context.Saga.OrderId = context.Message.Message.OrderId;
                     context.Saga.Client = context.Message.Message.Client;

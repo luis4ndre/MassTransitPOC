@@ -1,6 +1,6 @@
 using MassTransit;
-using Provision.Consumers;
-using Provision.Exceptions;
+using Reserve.Consumers;
+using Reserve.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 

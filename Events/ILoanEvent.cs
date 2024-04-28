@@ -1,5 +1,8 @@
-﻿namespace Events
+﻿using MassTransit;
+
+namespace Events
 {
+    [EntityName("queue-loan-event")]
     public interface ILoanEvent
     {
         public Guid OrderId { get; }

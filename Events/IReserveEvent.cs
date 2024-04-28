@@ -1,5 +1,8 @@
-﻿namespace Events
+﻿using MassTransit;
+
+namespace Events
 {
+    [EntityName("queue-reserve-event")]
     public interface IReserveEvent
     {
         public Guid OrderId { get; }
