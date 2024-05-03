@@ -9,14 +9,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMassTransit(cfg =>
+builder.Services.AddMassTransit(x =>
 {
-    cfg.UsingRabbitMq((context, cfg) =>
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(prefix: "masstransit-poc--", includeNamespace: false));
+
+    x.UsingAmazonSqs((context, cfg) =>
     {
+        cfg.Host("sa-east-1", h =>
+        {
+            h.AccessKey("your-iam-access-key");
+            h.SecretKey("your-iam-secret-key");
+        });
+
         cfg.ConfigureEndpoints(context);
     });
 
-    cfg.AddConsumer<NotificationConsumer>();
+    x.AddConsumer<NotificationConsumer>();
 });
 
 var app = builder.Build();

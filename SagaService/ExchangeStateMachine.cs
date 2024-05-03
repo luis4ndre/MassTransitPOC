@@ -58,18 +58,7 @@ namespace SagaService
                     context.Saga.Client = context.Message.Client;
                     context.Saga.Amount = context.Message.Amount;
                     context.Saga.Limit = context.Message.Limit;
-                }).TransitionTo(Loan),
-                When(ReserveFaulted)
-                .Then(context =>
-                {
-                    Console.WriteLine("Reserve => ReserveFaulted => Notification");
-
-                    context.Saga.OrderId = context.Message.Message.OrderId;
-                    context.Saga.Client = context.Message.Message.Client;
-                    context.Saga.Amount = context.Message.Message.Amount;
-                    context.Saga.Purchased = false;
-                    context.Saga.Message = "ReserveFaulted";
-                }).TransitionTo(Notification).Publish(context => new NotificationEvent(context.Saga)));
+                }).TransitionTo(Loan));
 
             During(Invoice,
                 When(NotificationEvent)
@@ -105,6 +94,19 @@ namespace SagaService
                     context.Saga.Client = context.Message.Client;
                     context.Saga.Amount = context.Message.Amount;
                 }).TransitionTo(Invoice));
+
+            DuringAny(
+                When(ReserveFaulted)
+                .Then(context =>
+                {
+                    Console.WriteLine("Any => ReserveFaulted => Notification");
+
+                    context.Saga.OrderId = context.Message.Message.OrderId;
+                    context.Saga.Client = context.Message.Message.Client;
+                    context.Saga.Amount = context.Message.Message.Amount;
+                    context.Saga.Purchased = false;
+                    context.Saga.Message = "ReserveFaulted";
+                }).TransitionTo(Notification).Publish(context => new NotificationEvent(context.Saga)));
 
             During(Notification,
                 When(NotificationEvent)

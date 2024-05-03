@@ -2,7 +2,7 @@
 
 namespace Events
 {
-    [EntityName("queue-invoice-event")]
+    [EntityName("masstransit-poc--invoice-event")]
     public interface IInvoiceEvent
     {
         public Guid OrderId { get; }

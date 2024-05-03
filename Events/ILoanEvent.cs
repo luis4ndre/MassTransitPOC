@@ -2,7 +2,7 @@
 
 namespace Events
 {
-    [EntityName("queue-loan-event")]
+    [EntityName("masstransit-poc--loan-event")]
     public interface ILoanEvent
     {
         public Guid OrderId { get; }

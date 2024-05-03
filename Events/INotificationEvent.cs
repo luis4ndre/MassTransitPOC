@@ -2,7 +2,7 @@
 
 namespace Events
 {
-    [EntityName("queue-notification-event")]
+    [EntityName("masstransit-poc--notification-event")]
     public interface INotificationEvent
     {
         public Guid OrderId { get; }

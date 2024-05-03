@@ -2,7 +2,7 @@
 
 namespace Events
 {
-    [EntityName("queue-reserve-event")]
+    [EntityName("masstransit-poc--reserve-event")]
     public interface IReserveEvent
     {
         public Guid OrderId { get; }

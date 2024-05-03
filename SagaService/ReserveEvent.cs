@@ -1,7 +1,9 @@
 ﻿using Events;
+using MassTransit;
 
 namespace SagaService
 {
+    [EntityName("masstransit-poc--reserve-event")]
     public class ReserveEvent(ExchangeStateData exchangeStateData) : IReserveEvent
     {
         private readonly ExchangeStateData _exchangeStateData = exchangeStateData;
