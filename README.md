@@ -11,6 +11,13 @@ MassTransitPOC é um projeto em C# destinado a demonstrar a implementação de S
 - .NET Core ou .NET Framework instalado no ambiente de desenvolvimento.
 - Biblioteca MassTransit instalada via NuGet Package Manager.
 
+## Componentes
+- SagaService: Projeto de implementação e comportamento da Saga Orquestrada.
+- PurchaseApi: Projeto API responsavel pela comunicação entre o cliente e aplicação, trata o recebimento e os eventos de notificação da "proposta".
+- Reserve: Projeto responsavel por tratar os eventos de reserva de valores solicitados.
+- Loan: Projeto responsavel por tratar os eventos de emprestimo de valores solicitados.
+- Invoice: Projeto responsavel por tratar os eventos de fatura de valores solicitados.
+
 ## Uso
 - Explore as Sagas fornecidas dentro do projeto.
 - Personalize as Sagas ou crie novas para atender aos requisitos da sua aplicação.
