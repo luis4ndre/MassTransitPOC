@@ -2,7 +2,7 @@
 MassTransitPOC é um projeto em C# destinado a demonstrar a implementação de Sagas usando o MassTransit, um framework de aplicativos distribuídos para .NET. Sagas são processos de longa duração que gerenciam e coordenam múltiplas transações em sistemas distribuídos, garantindo consistência e confiabilidade.
 
 ## Recursos
-Implementa Sagas usando o framework MassTransit.
+Implementa Sagas usando o framework MassTransit
 Demonstra como gerenciar fluxos de trabalho complexos e multietapas em sistemas distribuídos.
 Utiliza C# para fornecer um exemplo claro e conciso de implementação de Saga.
 Oferece flexibilidade para estender e personalizar Sagas com base em requisitos comerciais específicos.
