@@ -22,6 +22,3 @@ MassTransitPOC é um projeto em C# destinado a demonstrar a implementação de S
 - Explore as Sagas fornecidas dentro do projeto.
 - Personalize as Sagas ou crie novas para atender aos requisitos da sua aplicação.
 - Execute o aplicativo e observe a execução da Saga em ação.
-
-## Aviso
-Este projeto é apenas para fins educacionais e de demonstração. Pode não ser adequado para uso em produção sem mais personalização e testes.****
