@@ -28,4 +28,17 @@ MassTransitPOC é um projeto em C# destinado a demonstrar a implementação de S
 ![Diagrama](https://github.com/luis4ndre/MassTransitPOC/blob/7ba75afd1cc9e7cbf7f76c293ad8402a73fcdbdb/SAGA%20POC.drawio.png?raw=true)
 
 ## Topologia SQS/SNS
+
+- SQS - masstransit-poc--exchange-state-data	
+- SQS - masstransit-poc--invoice
+- SQS - masstransit-poc--loan
+- SQS - masstransit-poc--notification
+- SQS - masstransit-poc--reserve
+- SQS - masstransit-poc--reserve_error	
+
+- SNS - masstransit-poc--invoice-event
+- SNS - masstransit-poc--loan-event
+- SNS - masstransit-poc--new-order-event
+- SNS - masstransit-poc--notification-event
+- SNS - masstransit-poc--reserve-event
 ![Topologia](https://github.com/luis4ndre/MassTransitPOC/blob/3405f236369ffd8940dd25a2c403db45f6a66bba/topologia.drawio.png?raw=true)
