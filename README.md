@@ -26,3 +26,6 @@ MassTransitPOC é um projeto em C# destinado a demonstrar a implementação de S
 ## Diagrama
 
 ![Diagrama](https://github.com/luis4ndre/MassTransitPOC/blob/7ba75afd1cc9e7cbf7f76c293ad8402a73fcdbdb/SAGA%20POC.drawio.png?raw=true)
+
+## Topologia SQS/SNS
+![Topologia](https://github.com/luis4ndre/MassTransitPOC/blob/7ba75afd1cc9e7cbf7f76c293ad8402a73fcdbdb/topologia.drawio.png?raw=true)
